@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+
+    <h2>Dashboard de Visitas – Supervisor</h2>
+
+    <h3>Resumen</h3>
+    <ul>
+        <li><b>Total de visitas:</b> {{ total }}</li>
+        <li><b>Pendientes:</b> {{ pendientes }}</li>
+        <li><b>En progreso:</b> {{ progreso }}</li>
+        <li><b>Finalizadas:</b> {{ finalizadas }}</li>
+    </ul>
+
+    <hr>
+
+    <h3>Estado de la operación (visitas)</h3>
+    <canvas id="chartEstados" width="400" height="200"></canvas>
+
+    <br><br>
+
+    <h3>Visitas por Técnico</h3>
+    <canvas id="chartTecnicos" width="400" height="200"></canvas>
+
+    <hr>
+
+    <h3>Detalle de las visitas</h3>
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Técnico</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+        </tr>
+        {% for v in visits %}
+        <tr>
+            <td>{{ v.id }}</td>
+            <td>{{ v.client_id }}</td>
+            <td>{{ v.technician_id }}</td>
+            <td>{{ v.scheduled_date }}</td>
+            <td>{{ v.status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Gráfica de estado de las visitas
+new Chart(document.getElementById('chartEstados'), {
+    type: 'pie',
+    data: {
+        labels: ['Pendientes', 'En progreso', 'Finalizadas'],
+        datasets: [{
+            data: [{{ pendientes }}, {{ progreso }}, {{ finalizadas }}],
+            backgroundColor: ['orange', 'blue', 'green']
+        }]
+    }
+});
+
+// Gráfica de visitas por técnico
+new Chart(document.getElementById('chartTecnicos'), {
+    type: 'bar',
+    data: {
+        labels: [{% for t in visitas_por_tecnico %} "{{ t }}", {% endfor %}],
+        datasets: [{
+            label: 'Visitas por técnico',
+            data: [{% for t in visitas_por_tecnico.values() %} {{ t }}, {% endfor %}],
+            backgroundColor: 'purple'
+        }]
+    }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h2>Gestión de Clientes</h2>
+
+    <!--Agregando acción para intentar arreglar que se guarden los clientes en BD-->
+    <form method="POST" action="{{ url_for('frontend.clientes') }}">
+        <label>Nombre:</label>
+        <input type="text" name="name" placeholder="Nombre" required><br>
+        <label>Dirección:</label>
+        <input type="text" name="address" placeholder="Dirección" required><br>
+        <label>Correo:</label>
+        <input type="email" name="email" placeholder="Correo"><br>
+        <label>Teléfono:</label>
+        <input type="text" name="phone" placeholder="Teléfono"><br>
+        <label>Latitud:</label>
+        <input type="text" id="lat" name="latitude" placeholder="Latitud"><br>
+        <label>Longitud:</label>
+        <input type="text" id="lng" name="longitude" placeholder="Longitud"><br><br>
+
+        <div id="map" style="width:100%; height:400px; border-radius:8px;"></div><br>
+
+        <button type="submit">Agregar Cliente</button>
+    </form>
+
+    <hr>
+    <h3>Lista de Clientes</h3>
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>Nombre</th><th>Dirección</th><th>Correo</th><th>Teléfono</th><th>Mapa</th>
+        </tr>
+        {% for c in clients %}
+        <tr>
+            <td>{{ c.name }}</td>
+            <td>{{ c.address }}</td>
+            <td>{{ c.email }}</td>
+            <td>{{ c.phone }}</td>
+            <td>
+                {% if c.latitude and c.longitude %}
+                    <a href="https://www.google.com/maps?q={{ c.latitude }},{{ c.longitude }}" target="_blank">Ver mapa</a>
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- Script para incrustar Google Maps -->
+<script>
+let map, marker;
+
+function initMap() {
+    const guatemala = { lat: 14.6349, lng: -90.5069 }; // Centro inicial
+    map = new google.maps.Map(document.getElementById("map"), {
+        center: guatemala,
+        zoom: 7,
+    });
+
+    map.addListener("click", (e) => {
+        const lat = e.latLng.lat();
+        const lng = e.latLng.lng();
+
+        document.getElementById("lat").value = lat.toFixed(6);
+        document.getElementById("lng").value = lng.toFixed(6);
+
+        if (marker) marker.setMap(null);
+        marker = new google.maps.Marker({
+            position: { lat, lng },
+            map: map,
+        });
+    });
+}
+</script>
+
+<!-- MI API KEY -->
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=initMap">
+</script>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+# Ignorar entornos virtuals
+venv/
+env/
+.venv/
+
+# Ignorar archivo con variables sensibles - VARIABLES DE ENTORNO
+.env
+*.env
+
+# Ignorar archivos temporales de Python
+__pycache__/
+*.pyc
+*.pyo
+*.py[cod]
+
+# Ignora base de datos y otros arvhivos locales
+instance/
+*.db
+*.sqlite3
+
+# Ignorar reportes generados previamente
+generated_reports/
+
+# Ignorar duplicados generados por macOS (AppleDouble files), los crea macOS cuando trabaja en almacenamientos externos
+._*
+
+# Ignorar archivos de macOS
+.DS_Store
+.Trashes
+.Spotlight-V100
+
+# Basura y configs de VS Code
+.vscode/

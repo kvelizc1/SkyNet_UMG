@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h2>Registrar Usuario</h2>
+    {% if error %}<p style="color:red;">{{ error }}</p>{% endif %}
+    <form method="POST">
+        <label>Nombre:</label><br>
+        <input type="text" name="name" required><br>
+        <label>Email:</label><br>
+        <input type="email" name="email" required><br>
+        <label>Contraseña:</label><br>
+        <input type="password" name="password" required><br>
+        <label>Rol:</label><br>
+        <select name="role" required>
+            <option value="administrador">Administrador</option>
+            <option value="supervisor">Supervisor</option>
+            <option value="tecnico">Técnico</option>
+        </select><br><br>
+        <button type="submit">Registrar</button>
+    </form>
+</div>
+{% endblock %}

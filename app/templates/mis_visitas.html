@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <h2>Mis Visitas de Hoy</h2>
+
+    {% if success %}
+        <p style="color:green;">{{ success }}</p>
+    {% endif %}
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+    <table border="1" cellpadding="8" width="100%">
+        <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+
+        {% for v in visits %}
+        <tr>
+            <td>{{ v.id }}</td>
+            <td>{{ v.client_id }}</td>
+            <td>{{ v.scheduled_date }}</td>
+            <td>{{ v.status }}</td>
+            <td>
+                {% if v.status == "pendiente" %}
+                    <a href="/checkin/{{ v.id }}">Check-In</a>
+                    <!--<button onclick="checkIn('{{ v.id }}')">Check-In</button> -->
+                {% elif v.status == "en progreso" %}
+                    <a href="/checkout/{{ v.id }}">Check-Out</a>
+                    <!-- <button onclick="checkOut('{{ v.id }}')">Check-Out</button> -->
+                {% else %}
+                    <!--Finalizada-->
+                    <a href="/reporte/{{ v.id }}">Ver PDF</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+<script>
+function getLocation(callback) {
+    if (!navigator.geolocation) {
+        alert("Tu navegador no soporta geolocalización.");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        pos => callback(pos.coords.latitude, pos.coords.longitude),
+        err => alert("No se pudo obtener tu ubicación.")
+    );
+}
+
+function checkIn(id) {
+    getLocation((lat, lng) => {
+        fetch(`/registrar-checkin/${id}`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({latitude: lat, longitude: lng})
+        }).then(() => location.reload());
+    });
+}
+
+function checkOut(id) {
+    getLocation((lat, lng) => {
+        fetch(`/registrar-checkout/${id}`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({latitude: lat, longitude: lng})
+        }).then(() => location.reload());
+    });
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,78 @@
+<!-- VISTA PARA EL TÉCNICO, LUEGO DE HACER CLICK EN "CHECK-IN" desde "MIS VISITAS"
+Usa el mapa de Google.
+Muestra el punto del cliente y la ubicación real del técnico.
+Envía la lat/lng de check-in al backend. -->
+
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <h2>Registrar Check-In</h2>
+
+    <p><b>Cliente:</b> {{ client.name }}</p>
+    <p><b>Dirección:</b> {{ client.address }}</p>
+
+    <div id="map" style="height: 450px; width: 100%; margin-top: 20px;"></div>
+
+    <br>
+    <button id="btnCheckIn">Registrar Check-In</button>
+    <a href="/mis-visitas">Cancelar</a>
+</div>
+
+<script>
+let map, technicianMarker, clientMarker, lat, lng;
+
+function initMap() {
+    const clientPos = { lat: parseFloat("{{ client.latitude }}"), lng: parseFloat("{{ client.longitude }}") };
+
+    map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 16,
+        center: clientPos
+    });
+
+    // Marcador del cliente
+    clientMarker = new google.maps.Marker({
+        position: clientPos,
+        map: map,
+        label: "C",
+        title: "Ubicación del cliente"
+    });
+
+    // Obtener ubicación del técnico
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            lat = pos.coords.latitude;
+            lng = pos.coords.longitude;
+
+            technicianMarker = new google.maps.Marker({
+                position: { lat, lng },
+                map: map,
+                label: "T",
+                title: "Tu ubicación actual",
+                icon: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+            });
+
+            // Ajustar zoom para ver ambos puntos
+            const bounds = new google.maps.LatLngBounds();
+            bounds.extend(clientPos);
+            bounds.extend({ lat, lng });
+            map.fitBounds(bounds);
+        });
+    }
+}
+
+// Enviar Check-In al backend
+document.getElementById("btnCheckIn").onclick = function () {
+    fetch("/registrar-checkin/{{ visit_id }}", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ latitude: lat, longitude: lng })
+    }).then(() => {
+        window.location.href = "/mis-visitas";
+    });
+};
+</script>
+
+<script async src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=initMap"></script>
+
+{% endblock %}

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title or "SkyNetApp" }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>SkyNetApp</h1>
+        <nav>
+            <a href="/dashboard">Inicio</a> |
+            <a href="/login">Iniciar sesión</a> |
+            <a href="/register">Registrar usuario</a>
+        </nav>
+        <hr>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!--Planificación de visitas y asignación a técnicos: 
+- Formulario para crear visita
+- Lista de visitas
+- Vista sobre el estado de la visita-->
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+
+    <h2>Planificación de Visitas</h2>
+
+    {# --- FORMULARIO --- #}
+    <h3>Crear Nueva Visita</h3>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    {% if success %}
+        <p style="color: green;">{{ success }}</p>
+    {% endif %}
+
+    <form method="POST">
+        <label>Cliente:</label><br>
+        <select name="client_id" required>
+            <option value="">Seleccione un cliente</option>
+            {% for c in clients %}
+                <option value="{{ c.id }}">{{ c.name }} ({{ c.address }})</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label>Técnico:</label><br>
+        <select name="technician_id" required>
+            <option value="">Seleccione un técnico</option>
+            {% for t in technicians %}
+                <option value="{{ t.id }}">{{ t.name }} ({{ t.email }})</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label>Fecha y hora programada:</label><br>
+        <input type="datetime-local" name="scheduled_date" required><br><br>
+
+        <button type="submit">Crear Visita</button>
+    </form>
+
+    <hr>
+
+    {# --- LISTADO DE VISITAS --- #}
+    <h3>Visitas Planificadas</h3>
+
+    <table border="1" cellpadding="8" width="100%">
+        <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Técnico</th>
+            <th>Fecha programada</th>
+            <th>Estado</th>
+        </tr>
+
+        {% for v in visits %}
+        <tr>
+            <td>{{ v.id }}</td>
+            <td>{{ v.client_id }}</td>
+            <td>{{ v.technician_id }}</td>
+            <td>{{ v.scheduled_date }}</td>
+            <td>{{ v.status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+{% endblock %}

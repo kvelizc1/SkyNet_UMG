@@ -1,0 +1,39 @@
+<!-- El dashboard valida el tipo de usuario 
+ para presentar las opciones adecuadas al rol -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h2>Bienvenido, {{ user.name }}</h2>
+    <p>Tu rol: <b>{{ user.role|capitalize }}</b></p>
+    <hr>
+    {% if user.role == "administrador" %}
+        <h3>Panel de Administrador</h3>
+        <ul>
+            <li><a href="#">Gestión de Usuarios</a></li>
+            <li><a href="/clientes">Gestión de Clientes</a></li>
+            <li><a href="/visitas">Gestión de Visitas</a></li>
+            <li><a href="/dashboard-supervisor">Dashboard de Visitas (en desarrollo)</a></li>
+            <li><a href="#">Configuraciones del Sistema (próximamente)</a></li>
+        </ul>
+
+    {% elif user.role == "supervisor" %}
+        <h3>Panel de Supervisor</h3>
+        <ul>
+            <li><a href="/visitas">Planificar Visitas</a></li>
+            <li><a href="/dashboard-supervisor">Dashboard de Visitas (en desarrollo)</a></li>
+            <li><a href="#">Monitorear Técnicos (próximamente)</a></li>
+            <li><a href="#">Reportes de Visitas (próximamente)</a></li>
+        </ul>
+
+    {% elif user.role == "tecnico" %}
+        <h3>Panel de Técnico</h3>
+        <ul>
+            <li><a href="/mis-visitas">Mis Visitas</a></li>
+            <li><a href="#">Historial (próximamente)</a></li>
+        </ul>
+    {% endif %}
+
+    <br>
+    <a href="/logout">Cerrar sesión</a>
+</div>
+{% endblock %}
