@@ -8,7 +8,9 @@ import os
 
 frontend_bp = Blueprint("frontend", __name__)
 
-API_URL = "http://127.0.0.1:5000/api/users"
+#API_URL = "http://127.0.0.1:5000/api/users"
+Backend_URL = Config.BACKEND_URL
+API_URL = Backend_URL + "/api/users"
 
 @frontend_bp.route("/")
 def index():
@@ -23,7 +25,9 @@ def login():
         email = request.form.get("email")
         password = request.form.get("password")
 
-        response = requests.post(f"{API_URL}/login", json={"email": email, "password": password})
+        #response = requests.post(f"{API_URL}/login", json={"email": email, "password": password})
+        response = requests.post("http://127.0.0.1/login", json={"email": email, "password": password})
+        print("[DEBUG] Login response:", response.status_code, response.text)
         if response.status_code == 200:
             data = response.json()
             session["token"] = data["access_token"]
@@ -144,11 +148,13 @@ def visitas():
     headers = {"Authorization": f"Bearer {token}"}
 
     # --- OBTENER CLIENTES ---
-    clients_resp = requests.get("http://127.0.0.1:5000/api/clients/", headers=headers)
+    #clients_resp = requests.get("http://127.0.0.1:5000/api/clients/", headers=headers)
+    clients_resp = requests.get(f"{Backend_URL}/api/clients/", headers=headers)
     clients = clients_resp.json() if clients_resp.status_code == 200 else []
 
     # --- OBTENER TÉCNICOS ---
-    users_resp = requests.get("http://127.0.0.1:5000/api/users/", headers=headers)
+    #users_resp = requests.get("http://127.0.0.1:5000/api/users/", headers=headers)
+    users_resp = requests.get(f"{Backend_URL}/api/users/", headers=headers)
     all_users = users_resp.json() if users_resp.status_code == 200 else []
     technicians = [u for u in all_users if u["role"] == "tecnico"]
 
@@ -166,7 +172,8 @@ def visitas():
         print("[DEBUG] Intentando crear visita:", data)
 
         resp = requests.post(
-            "http://127.0.0.1:5000/api/visits/",
+            #"http://127.0.0.1:5000/api/visits/",
+            f"{Backend_URL}/api/visits/",
             json=data,
             headers=headers
         )
@@ -177,7 +184,8 @@ def visitas():
             error = f"Error al crear visita: {resp.text}"
 
     # --- OBTENER VISITAS ---
-    visits_resp = requests.get("http://127.0.0.1:5000/api/visits/", headers=headers)
+    #visits_resp = requests.get("http://127.0.0.1:5000/api/visits/", headers=headers)
+    visits_resp = requests.get(f"{Backend_URL}/api/visits/", headers=headers)
     visits = visits_resp.json() if visits_resp.status_code == 200 else []
 
     return render_template(
@@ -201,7 +209,8 @@ def mis_visitas():
     headers = {"Authorization": f"Bearer {token}"}
 
     # Obtener visitas del técnico
-    resp = requests.get("http://127.0.0.1:5000/api/visits/", headers=headers)
+    #resp = requests.get("http://127.0.0.1:5000/api/visits/", headers=headers)
+    resp = requests.get(f"{Backend_URL}/api/visits/", headers=headers)
 
     visits = resp.json() if resp.status_code == 200 else []
 
@@ -221,7 +230,8 @@ def checkin_page(visit_id):
     headers = {"Authorization": f"Bearer {token}"}
 
     # Obtener datos de la visita
-    resp = requests.get(f"http://127.0.0.1:5000/api/visits/", headers=headers)
+    #resp = requests.get(f"http://127.0.0.1:5000/api/visits/", headers=headers)
+    resp = requests.get(f"{Backend_URL}/api/visits/", headers=headers)
     visits = resp.json()
 
     visit = next((v for v in visits if v["id"] == visit_id), None)
@@ -229,7 +239,7 @@ def checkin_page(visit_id):
         return "Visita no encontrada", 404
 
     # Obtener cliente
-    client_resp = requests.get(f"http://127.0.0.1:5000/api/clients/", headers=headers)
+    client_resp = requests.get(f"{Backend_URL}/api/clients/", headers=headers)
     all_clients = client_resp.json()
     client = next((c for c in all_clients if c["id"] == visit["client_id"]), None)
 
@@ -252,11 +262,12 @@ def checkout_page(visit_id):
     token = session.get("token")
     headers = {"Authorization": f"Bearer {token}"}
 
-    resp = requests.get("http://127.0.0.1:5000/api/visits/", headers=headers)
+    resp = requests.get(f"{Backend_URL}/api/visits/", headers=headers)
     visits = resp.json()
     visit = next((v for v in visits if v["id"] == visit_id), None)
 
-    client_resp = requests.get("http://127.0.0.1:5000/api/clients/", headers=headers)
+    #client_resp = requests.get("http://127.0.0.1:5000/api/clients/", headers=headers)
+    client_resp = requests.get(f"{Backend_URL}/api/clients/", headers=headers)
     clients = client_resp.json()
     client = next((c for c in clients if c["id"] == visit["client_id"]), None)
 
@@ -283,7 +294,8 @@ def registrar_checkin(id):
     headers = {"Authorization": f"Bearer {token}"}
 
     resp = requests.put(
-        f"http://127.0.0.1:5000/api/visits/check_in/{id}",
+        #f"http://127.0.0.1:5000/api/visits/check_in/{id}",
+        f"{Backend_URL}/visits/check_in/{id}",
         json=data,
         headers=headers
     )
@@ -302,7 +314,7 @@ def registrar_checkout(id):
     headers = {"Authorization": f"Bearer {token}"}
 
     resp = requests.put(
-        f"http://127.0.0.1:5000/api/visits/check_out/{id}",
+        f"{Backend_URL}/api/visits/check_out/{id}",
         json=data,
         headers=headers
     )
@@ -336,7 +348,8 @@ def dashboard_supervisor():
     headers = {"Authorization": f"Bearer {token}"}
 
     # Obtener visitas del supervisor
-    resp = requests.get("http://127.0.0.1:5000/api/visits/", headers=headers)
+    #resp = requests.get("http://127.0.0.1:5000/api/visits/", headers=headers)
+    resp = requests.get(f"{Backend_URL}/api/visits/", headers=headers)
 
     visits = resp.json() if resp.status_code == 200 else []
 
