@@ -5,8 +5,10 @@
 
 import requests
 from flask import session, redirect, url_for
+from app.config import Config
 
-API_BASE = "http://127.0.0.1:5000"
+#API_BASE = "http://127.0.0.1:5000"
+API_BASE = Config.BACKEND_URL
 
 def api_request(method, endpoint, token, **kwargs):
     headers = kwargs.pop("headers", {})
