@@ -27,7 +27,8 @@ class Config:
     MAIL_USERNAME = os.getenv("MAIL_USERNAME", "")
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "")
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", MAIL_USERNAME)
-    
+    # URL del backend, para el cliente API
+    BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:5000")
 
 
 
