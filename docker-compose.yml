@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  web:
+    build: .
+    container_name: skynet_app
+    ports:
+      - "80:8000"
+    volumes:
+      - ./instance:/app/instance
+    env_file:
+      - .env
+    restart: always
