@@ -8,7 +8,7 @@ import os
 
 frontend_bp = Blueprint("frontend", __name__)
 
-#API_URL = "http://127.0.0.1:5000/api/users"
+#API_URL = "http://127.0.0.1:5050/api/users"
 Backend_URL = Config.BACKEND_URL
 API_URL = Backend_URL + "/api/users"
 
@@ -26,7 +26,7 @@ def login():
         password = request.form.get("password")
 
         #response = requests.post(f"{API_URL}/login", json={"email": email, "password": password})
-        response = requests.post("http://127.0.0.1/login", json={"email": email, "password": password})
+        response = requests.post(f"{API_URL}/login", json={"email": email, "password": password})
         print("[DEBUG] Login response:", response.status_code, response.text)
         if response.status_code == 200:
             data = response.json()

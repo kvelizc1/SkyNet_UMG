@@ -15,8 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar el todo del proyecto
 COPY . /app/
 
-# Exponer el puerto donde correrá Gunicorn (Flask pero para producción)
-#EXPOSE 8000
+# Exponer el puerto donde correrá Gunicorn (Flask pero para producción)(Seguimos con Flask)
 EXPOSE 5050
 
 # Ejecutar el app
