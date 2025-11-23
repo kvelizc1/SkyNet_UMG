@@ -283,7 +283,8 @@ def checkout_page(visit_id):
 
 # Deprecated - no funcionó bien en local... ''' yo no funciono bien en local .-.
 
-@frontend_bp.route("/registrar-checkin/<int:id>", methods=["POST"])
+#@frontend_bp.route("/registrar-checkin/<int:id>", methods=["POST"])
+@frontend_bp.route("/registrar-checkin/<int:id>", methods=["PUT"])
 def registrar_checkin(id):
     user = session.get("user")
     if not user or user["role"] != "tecnico":
@@ -293,8 +294,8 @@ def registrar_checkin(id):
     token = session.get("token")
     headers = {"Authorization": f"Bearer {token}"}
 
+    #f"http://127.0.0.1:5000/api/visits/check_in/{id}",
     resp = requests.put(
-        #f"http://127.0.0.1:5000/api/visits/check_in/{id}",
         f"{Backend_URL}/visits/check_in/{id}",
         json=data,
         headers=headers
