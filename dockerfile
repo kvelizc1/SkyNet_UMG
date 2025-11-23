@@ -19,8 +19,8 @@ COPY . /app/
 EXPOSE 5050
 
 # Ejecutar el app
-CMD ["python", "run.py"]
+#CMD ["python", "run.py"]
 
 #Comando de inicio (Gunicorn, usando create_app)
-#CMD ["gunicorn", "-b", "0.0.0.0:5050", "run:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:5050", "run:app"]
 
