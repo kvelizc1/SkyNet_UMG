@@ -24,6 +24,7 @@ def login():
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
+        print("[DEBUG] API CALL:", f"{API_URL}/login")
 
         #response = requests.post(f"{API_URL}/login", json={"email": email, "password": password})
         response = requests.post(f"{API_URL}/login", json={"email": email, "password": password})
@@ -283,8 +284,8 @@ def checkout_page(visit_id):
 
 # Deprecated - no funcionó bien en local... ''' yo no funciono bien en local .-.
 
-#@frontend_bp.route("/registrar-checkin/<int:id>", methods=["POST"])
-@frontend_bp.route("/registrar-checkin/<int:id>", methods=["PUT"])
+@frontend_bp.route("/registrar-checkin/<int:id>", methods=["POST"])
+#@frontend_bp.route("/registrar-checkin/<int:id>", methods=["PUT"])
 def registrar_checkin(id):
     user = session.get("user")
     if not user or user["role"] != "tecnico":
@@ -296,7 +297,7 @@ def registrar_checkin(id):
 
     #f"http://127.0.0.1:5000/api/visits/check_in/{id}",
     resp = requests.put(
-        f"{Backend_URL}/visits/check_in/{id}",
+        f"{Backend_URL}/api/visits/check_in/{id}",
         json=data,
         headers=headers
     )
